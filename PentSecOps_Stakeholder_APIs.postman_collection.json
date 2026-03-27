@@ -1,0 +1,743 @@
+{
+	"info": {
+		"_postman_id": "stakeholder-apis-2025",
+		"name": "PentSecOps - Stakeholder APIs",
+		"description": "Complete collection of all Stakeholder role APIs for PentSecOps Backend\n\nThis collection includes:\n- Authentication (Login)\n- Overview Tab APIs (UC1-UC10)\n- Vulnerabilities Tab APIs (UC11-UC27)\n- Reports Tab APIs (UC28-UC42)\n\nBase URL: http://localhost:8080/api\n\nTest Credentials:\n- Email: stakeholder@test.com\n- Password: stakeholder123",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080/api",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "stakeholder_email",
+			"value": "stakeholder@test.com",
+			"type": "string"
+		},
+		{
+			"key": "stakeholder_password",
+			"value": "stakeholder123",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login as Stakeholder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Save access token to collection variable",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+									"    console.log(\"Access token saved:\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{stakeholder_email}}\",\n    \"password\": \"{{stakeholder_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login as stakeholder user to get access token"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints"
+		},
+		{
+			"name": "Overview Tab",
+			"item": [
+				{
+					"name": "UC1-UC6: Get Security Metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/overview/security-metrics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"overview",
+								"security-metrics"
+							]
+						},
+						"description": "Get all 6 security metrics cards:\n- UC1: Overall Security Score (0-10 scale)\n- UC2: Active Projects Count\n- UC3: Critical Issues Count\n- UC4: Open Vulnerabilities Count with Trend\n- UC5: Remediation Rate Percentage\n- UC6: SLA Compliance Percentage"
+					},
+					"response": []
+				},
+				{
+					"name": "UC7: Get Vulnerability Trend Chart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/overview/vulnerability-trend",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"overview",
+								"vulnerability-trend"
+							]
+						},
+						"description": "Get vulnerability trend data for line chart (last 5 months)\n- Open vulnerabilities trend\n- Resolved vulnerabilities trend"
+					},
+					"response": []
+				},
+				{
+					"name": "UC8: Get Asset Status Chart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/overview/asset-status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"overview",
+								"asset-status"
+							]
+						},
+						"description": "Get vulnerability distribution across assets (stacked bar chart)\n- Vulnerabilities grouped by domain/asset\n- Count by severity level (Critical, High, Medium, Low)"
+					},
+					"response": []
+				},
+				{
+					"name": "UC9: Get Recent Security Events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/overview/recent-events?limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"overview",
+								"recent-events"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of events to retrieve (default: 10)"
+								}
+							]
+						},
+						"description": "Get recent security events and updates\n- Latest security events timeline\n- Event descriptions with timestamps"
+					},
+					"response": []
+				},
+				{
+					"name": "UC10: Get Remediation Updates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/overview/remediation-updates?limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"overview",
+								"remediation-updates"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of updates to retrieve (default: 10)"
+								}
+							]
+						},
+						"description": "Get recent remediation updates\n- Latest remediation activities\n- Status changes and progress updates"
+					},
+					"response": []
+				}
+			],
+			"description": "Overview Tab APIs (UC1-UC10)"
+		},
+		{
+			"name": "Vulnerabilities Tab",
+			"item": [
+				{
+					"name": "UC11-UC14: Get Vulnerabilities Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/vulnerabilities/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"vulnerabilities",
+								"stats"
+							]
+						},
+						"description": "Get vulnerabilities overview statistics (4 cards):\n- UC11: Critical Count\n- UC12: High Count\n- UC13: Open Issues Count\n- UC14: Remediation Rate Percentage"
+					},
+					"response": []
+				},
+				{
+					"name": "UC15-UC23: List Vulnerabilities (All)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/vulnerabilities/list?page=1&per_page=5&search=&severity=all&status=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"vulnerabilities",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "per_page",
+									"value": "5",
+									"description": "Items per page (default: 5)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search by title or domain"
+								},
+								{
+									"key": "severity",
+									"value": "all",
+									"description": "Filter by severity: all, critical, high, medium, low"
+								},
+								{
+									"key": "status",
+									"value": "all",
+									"description": "Filter by status: all, open, in_progress, remediated, verified"
+								}
+							]
+						},
+						"description": "List all vulnerabilities with pagination\n- UC15: Search by title/domain\n- UC16: Filter by severity\n- UC17: Filter by status\n- UC18-UC23: Display table with columns (ID, Title, Severity, Domain, Status, Discovered Date, Due Date, Assigned To)"
+					},
+					"response": []
+				},
+				{
+					"name": "UC15-UC23: List Vulnerabilities (Critical Only)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/vulnerabilities/list?page=1&per_page=5&severity=critical&status=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"vulnerabilities",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "5"
+								},
+								{
+									"key": "severity",
+									"value": "critical"
+								},
+								{
+									"key": "status",
+									"value": "all"
+								}
+							]
+						},
+						"description": "List critical vulnerabilities only"
+					},
+					"response": []
+				},
+				{
+					"name": "UC15-UC23: List Vulnerabilities (Open Status)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/vulnerabilities/list?page=1&per_page=5&severity=all&status=open",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"vulnerabilities",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "5"
+								},
+								{
+									"key": "severity",
+									"value": "all"
+								},
+								{
+									"key": "status",
+									"value": "open"
+								}
+							]
+						},
+						"description": "List open vulnerabilities only"
+					},
+					"response": []
+				},
+				{
+					"name": "UC15-UC23: Search Vulnerabilities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/vulnerabilities/list?page=1&per_page=5&search=SQL&severity=all&status=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"vulnerabilities",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "5"
+								},
+								{
+									"key": "search",
+									"value": "SQL",
+									"description": "Search term for title or domain"
+								},
+								{
+									"key": "severity",
+									"value": "all"
+								},
+								{
+									"key": "status",
+									"value": "all"
+								}
+							]
+						},
+						"description": "Search vulnerabilities by title or domain"
+					},
+					"response": []
+				},
+				{
+					"name": "UC24: Export Vulnerabilities to CSV",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/vulnerabilities/export-csv?search=&severity=all&status=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"vulnerabilities",
+								"export-csv"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search filter (optional)"
+								},
+								{
+									"key": "severity",
+									"value": "all",
+									"description": "Severity filter (optional)"
+								},
+								{
+									"key": "status",
+									"value": "all",
+									"description": "Status filter (optional)"
+								}
+							]
+						},
+						"description": "Export filtered vulnerabilities to CSV file\n- Applies same filters as list endpoint\n- Returns CSV file with all vulnerability data"
+					},
+					"response": []
+				},
+				{
+					"name": "UC25-UC27: Get SLA Compliance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/vulnerabilities/sla-compliance",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"vulnerabilities",
+								"sla-compliance"
+							]
+						},
+						"description": "Get SLA compliance metrics (3 cards):\n- UC25: Critical Vulnerabilities Overdue\n- UC26: High Severity Approaching Deadline (within 3 days)\n- UC27: Overall SLA Compliance Percentage"
+					},
+					"response": []
+				}
+			],
+			"description": "Vulnerabilities Tab APIs (UC11-UC27)"
+		},
+		{
+			"name": "Reports Tab",
+			"item": [
+				{
+					"name": "UC28-UC30: Get Reports Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/reports/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"reports",
+								"stats"
+							]
+						},
+						"description": "Get reports overview statistics (3 cards):\n- UC28: Total Reports Count\n- UC29: Under Review Count\n- UC30: Remediated Count"
+					},
+					"response": []
+				},
+				{
+					"name": "UC31-UC36: List Reports (All)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/reports/list?page=1&per_page=5&status=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"reports",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "per_page",
+									"value": "5",
+									"description": "Items per page (default: 5)"
+								},
+								{
+									"key": "status",
+									"value": "all",
+									"description": "Filter by status: all, received, under_review, shared, remediated"
+								}
+							]
+						},
+						"description": "List all reports with pagination\n- UC31: Filter by status\n- UC32: Fetch and display all reports\n- UC33: Navigate pages\n- UC34: Display status badge with color coding\n- UC35: Display vulnerabilities count\n- UC36: Display evidence count"
+					},
+					"response": []
+				},
+				{
+					"name": "UC31-UC36: List Reports (Under Review)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/reports/list?page=1&per_page=5&status=under_review",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"reports",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "5"
+								},
+								{
+									"key": "status",
+									"value": "under_review"
+								}
+							]
+						},
+						"description": "List reports with 'under_review' status only"
+					},
+					"response": []
+				},
+				{
+					"name": "UC31-UC36: List Reports (Remediated)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/reports/list?page=1&per_page=5&status=remediated",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"reports",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "5"
+								},
+								{
+									"key": "status",
+									"value": "remediated"
+								}
+							]
+						},
+						"description": "List reports with 'remediated' status only"
+					},
+					"response": []
+				},
+				{
+					"name": "UC37-UC38: View Report Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/reports/view?report_id=REPORT_ID_HERE&evidence_page=1&evidence_per_page=3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"reports",
+								"view"
+							],
+							"query": [
+								{
+									"key": "report_id",
+									"value": "REPORT_ID_HERE",
+									"description": "Report UUID (required)"
+								},
+								{
+									"key": "evidence_page",
+									"value": "1",
+									"description": "Evidence files page number (default: 1)"
+								},
+								{
+									"key": "evidence_per_page",
+									"value": "3",
+									"description": "Evidence files per page (default: 3)"
+								}
+							]
+						},
+						"description": "View complete report details\n- UC37: Open report viewer dialog\n- UC38: View vulnerabilities in report\n- Includes report header, vulnerabilities list, and evidence files with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "UC39-UC40: Get Report Evidence Files",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/reports/evidence?report_id=REPORT_ID_HERE&page=1&per_page=3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"reports",
+								"evidence"
+							],
+							"query": [
+								{
+									"key": "report_id",
+									"value": "REPORT_ID_HERE",
+									"description": "Report UUID (required)"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "per_page",
+									"value": "3",
+									"description": "Items per page (default: 3)"
+								}
+							]
+						},
+						"description": "Get evidence files for a report with pagination\n- UC39: Fetch and display evidence files\n- UC40: Navigate evidence files pages"
+					},
+					"response": []
+				},
+				{
+					"name": "UC41: Download Evidence File",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/reports/download-evidence?file_id=FILE_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"reports",
+								"download-evidence"
+							],
+							"query": [
+								{
+									"key": "file_id",
+									"value": "FILE_ID_HERE",
+									"description": "Evidence file UUID (required)"
+								}
+							]
+						},
+						"description": "Download evidence file\n- Returns file download information\n- Initiates file download"
+					},
+					"response": []
+				},
+				{
+					"name": "UC42: Download Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stakeholder/reports/download?report_id=REPORT_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stakeholder",
+								"reports",
+								"download"
+							],
+							"query": [
+								{
+									"key": "report_id",
+									"value": "REPORT_ID_HERE",
+									"description": "Report UUID (required)"
+								}
+							]
+						},
+						"description": "Download report file\n- Returns report file for download\n- Initiates PDF/document download"
+					},
+					"response": []
+				}
+			],
+			"description": "Reports Tab APIs (UC28-UC42)"
+		}
+	]
+}

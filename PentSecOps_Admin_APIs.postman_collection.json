@@ -1,0 +1,1052 @@
+{
+	"info": {
+		"_postman_id": "pentsecops-admin-collection-2025",
+		"name": "PentSecOps - Admin APIs",
+		"description": "Complete collection of all PentSecOps Admin APIs including Authentication, Users, Projects, Vulnerabilities, Domains, and Notifications",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080/api",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', jsonData.access_token);",
+									"    pm.collectionVariables.set('refresh_token', jsonData.refresh_token);",
+									"    pm.collectionVariables.set('user_id', jsonData.user_id);",
+									"    pm.environment.set('access_token', jsonData.access_token);",
+									"    pm.environment.set('refresh_token', jsonData.refresh_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@test.com\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login with email and password. Returns access token and refresh token."
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', jsonData.access_token);",
+									"    pm.collectionVariables.set('refresh_token', jsonData.refresh_token);",
+									"    pm.environment.set('access_token', jsonData.access_token);",
+									"    pm.environment.set('refresh_token', jsonData.refresh_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/refresh",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "refresh"]
+						},
+						"description": "Refresh access token using refresh token. Returns new token pair."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"old_password\": \"admin123\",\n    \"new_password\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/change-password",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "change-password"]
+						},
+						"description": "Change user password. Requires authentication."
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						},
+						"description": "Logout and invalidate refresh token."
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for login, token refresh, password change, and logout"
+		},
+		{
+			"name": "Admin - Overview",
+			"item": [
+				{
+					"name": "Get Overview Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/overview/stats",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "overview", "stats"]
+						},
+						"description": "Get overview statistics (total projects, users, vulnerabilities, domains)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vulnerabilities by Severity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/overview/vulnerabilities-by-severity",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "overview", "vulnerabilities-by-severity"]
+						},
+						"description": "Get vulnerability count grouped by severity (Critical, High, Medium, Low)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Top Domains",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/overview/top-domains?limit=5",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "overview", "top-domains"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						},
+						"description": "Get top domains by risk score"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Project Status Distribution",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/overview/project-status-distribution",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "overview", "project-status-distribution"]
+						},
+						"description": "Get project count grouped by status (Open, In Progress, Completed)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent Activity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/overview/recent-activity?limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "overview", "recent-activity"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Get recent activity logs"
+					},
+					"response": []
+				}
+			],
+			"description": "Admin overview dashboard APIs"
+		},
+		{
+			"name": "Admin - Users",
+			"item": [
+				{
+					"name": "Get User Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/stats",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", "stats"]
+						},
+						"description": "Get user statistics (total, pentesters, stakeholders)"
+					},
+					"response": []
+				},
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users?page=1&limit=5&role=&search=",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "role",
+									"value": "",
+									"description": "Filter by role: pentester, stakeholder"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search by name or email"
+								}
+							]
+						},
+						"description": "List users with pagination and filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"pentester@test.com\",\n    \"full_name\": \"Test Pentester\",\n    \"role\": \"pentester\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users"]
+						},
+						"description": "Create new user with auto-generated credentials"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\": \"Updated Name\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user-uuid-here"
+								}
+							]
+						},
+						"description": "Update user details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user-uuid-here"
+								}
+							]
+						},
+						"description": "Delete user"
+					},
+					"response": []
+				},
+				{
+					"name": "Export Users CSV",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/export",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", "export"]
+						},
+						"description": "Export all users to CSV"
+					},
+					"response": []
+				}
+			],
+			"description": "User management APIs"
+		},
+		{
+			"name": "Admin - Projects",
+			"item": [
+				{
+					"name": "Get Project Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/projects/stats",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "projects", "stats"]
+						},
+						"description": "Get project statistics (open, in progress, completed)"
+					},
+					"response": []
+				},
+				{
+					"name": "List Projects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/projects?page=1&limit=5&status=&type=&search=",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "projects"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Filter by status: open, in_progress, completed"
+								},
+								{
+									"key": "type",
+									"value": "",
+									"description": "Filter by type: web, network, api, mobile"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search by project name"
+								}
+							]
+						},
+						"description": "List projects with pagination and filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Web Application Pentest\",\n    \"type\": \"web\",\n    \"assigned_to\": \"pentester-uuid-here\",\n    \"deadline\": \"2025-12-31T23:59:59Z\",\n    \"scope\": \"Full web application security assessment\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/projects",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "projects"]
+						},
+						"description": "Create new project"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Project Name\",\n    \"status\": \"in_progress\",\n    \"assigned_to\": \"pentester-uuid-here\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/projects/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "projects", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "project-uuid-here"
+								}
+							]
+						},
+						"description": "Update project details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Project",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/projects/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "projects", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "project-uuid-here"
+								}
+							]
+						},
+						"description": "Delete project"
+					},
+					"response": []
+				}
+			],
+			"description": "Project management APIs"
+		},
+		{
+			"name": "Admin - Tasks",
+			"item": [
+				{
+					"name": "List Tasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/tasks?page=1&limit=10&project_id=&status=",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "tasks"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "project_id",
+									"value": "",
+									"description": "Filter by project ID"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Filter by status: pending, in_progress, completed"
+								}
+							]
+						},
+						"description": "List tasks with pagination and filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"project_id\": \"project-uuid-here\",\n    \"title\": \"Perform SQL Injection Testing\",\n    \"description\": \"Test all input fields for SQL injection vulnerabilities\",\n    \"assigned_to\": \"pentester-uuid-here\",\n    \"priority\": \"high\",\n    \"due_date\": \"2025-11-30T23:59:59Z\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/tasks",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "tasks"]
+						},
+						"description": "Create new task"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Task Title\",\n    \"status\": \"in_progress\",\n    \"priority\": \"critical\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/tasks/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "tasks", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "task-uuid-here"
+								}
+							]
+						},
+						"description": "Update task details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/tasks/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "tasks", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "task-uuid-here"
+								}
+							]
+						},
+						"description": "Delete task"
+					},
+					"response": []
+				}
+			],
+			"description": "Task management APIs for project task board"
+		},
+		{
+			"name": "Admin - Vulnerabilities",
+			"item": [
+				{
+					"name": "Get Vulnerability Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/vulnerabilities/stats",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "vulnerabilities", "stats"]
+						},
+						"description": "Get vulnerability statistics by severity and status"
+					},
+					"response": []
+				},
+				{
+					"name": "List Vulnerabilities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/vulnerabilities?page=1&limit=5&severity=&status=&search=",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "vulnerabilities"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "severity",
+									"value": "",
+									"description": "Filter by severity: critical, high, medium, low"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Filter by status: open, in_progress, remediated, verified"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search by title or description"
+								}
+							]
+						},
+						"description": "List vulnerabilities with pagination and filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vulnerability",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"project_id\": \"project-uuid-here\",\n    \"title\": \"SQL Injection in Login Form\",\n    \"description\": \"The login form is vulnerable to SQL injection attacks\",\n    \"severity\": \"critical\",\n    \"cvss_score\": 9.8,\n    \"affected_url\": \"https://example.com/login\",\n    \"remediation\": \"Use parameterized queries\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/vulnerabilities",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "vulnerabilities"]
+						},
+						"description": "Create new vulnerability"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Vulnerability",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"remediated\",\n    \"severity\": \"high\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/vulnerabilities/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "vulnerabilities", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "vulnerability-uuid-here"
+								}
+							]
+						},
+						"description": "Update vulnerability details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Vulnerability",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/vulnerabilities/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "vulnerabilities", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "vulnerability-uuid-here"
+								}
+							]
+						},
+						"description": "Delete vulnerability"
+					},
+					"response": []
+				},
+				{
+					"name": "Export Vulnerabilities CSV",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/vulnerabilities/export",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "vulnerabilities", "export"]
+						},
+						"description": "Export all vulnerabilities to CSV"
+					},
+					"response": []
+				}
+			],
+			"description": "Vulnerability management APIs"
+		},
+		{
+			"name": "Admin - Domains",
+			"item": [
+				{
+					"name": "Get Domain Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/domains/stats",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "domains", "stats"]
+						},
+						"description": "Get domain statistics (total, high risk, medium risk, low risk)"
+					},
+					"response": []
+				},
+				{
+					"name": "List Domains",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/domains?page=1&limit=5&risk_level=&search=",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "domains"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "risk_level",
+									"value": "",
+									"description": "Filter by risk level: high, medium, low"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search by domain name"
+								}
+							]
+						},
+						"description": "List domains with pagination and filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Domain",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"project_id\": \"project-uuid-here\",\n    \"domain_name\": \"example.com\",\n    \"ip_address\": \"192.168.1.1\",\n    \"risk_score\": 75\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/domains",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "domains"]
+						},
+						"description": "Create new domain"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Domain",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"risk_score\": 85,\n    \"ip_address\": \"192.168.1.2\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/domains/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "domains", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "domain-uuid-here"
+								}
+							]
+						},
+						"description": "Update domain details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Domain",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/domains/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "domains", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "domain-uuid-here"
+								}
+							]
+						},
+						"description": "Delete domain"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Security Metrics Radar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/domains/:id/security-metrics",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "domains", ":id", "security-metrics"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "domain-uuid-here"
+								}
+							]
+						},
+						"description": "Get security metrics radar chart data for a domain"
+					},
+					"response": []
+				},
+				{
+					"name": "Get SLA Breach Analysis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/domains/sla-breach-analysis",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "domains", "sla-breach-analysis"]
+						},
+						"description": "Get SLA breach analysis for all domains"
+					},
+					"response": []
+				}
+			],
+			"description": "Domain management APIs"
+		},
+		{
+			"name": "Admin - Notifications",
+			"item": [
+				{
+					"name": "Get Total Notifications Sent",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/notifications/total-sent",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "notifications", "total-sent"]
+						},
+						"description": "Get total count of notifications sent by admin"
+					},
+					"response": []
+				},
+				{
+					"name": "List Notifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/notifications?page=1&limit=5",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "notifications"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						},
+						"description": "List notification history with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Notification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Important Security Update\",\n    \"message\": \"Please update your systems immediately\",\n    \"sent_to\": \"all_pentesters\",\n    \"recipient_id\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/notifications",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "notifications"]
+						},
+						"description": "Create and send new notification. sent_to options: all_pentesters, all_stakeholders, specific_user (requires recipient_id)"
+					},
+					"response": []
+				},
+				{
+					"name": "List Important Alerts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/notifications/alerts?page=1&limit=5",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "notifications", "alerts"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						},
+						"description": "List important alerts from pentesters with pagination"
+					},
+					"response": []
+				}
+			],
+			"description": "Notification management APIs"
+		}
+	]
+}
+
