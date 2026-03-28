@@ -150,14 +150,14 @@ func main() {
 
 	// Initialize Fiber app
 	app := fiber.New(fiber.Config{
-		AppName:               "PentSecOps API",
-		ServerHeader:          "PentSecOps",
+		AppName:             "PentSecOps API",
+		ServerHeader:        "PentSecOps",
 		DisableStartupMessage: false,
-		ErrorHandler:          customErrorHandler,
-		Prefork:               false,
-		StrictRouting:         false,
-		CaseSensitive:         false,
-		BodyLimit:             10 * 1024 * 1024, // 10MB
+		ErrorHandler:        customErrorHandler,
+		Prefork:             false,
+		StrictRouting:       false,
+		CaseSensitive:       false,
+		BodyLimit:           10 * 1024 * 1024, // 10MB
 	})
 
 	// Apply global middleware
@@ -165,7 +165,18 @@ func main() {
 	app.Use(middleware.CORS(&cfg.CORS))
 	app.Use(middleware.RateLimit(&cfg.RateLimit))
 
-	// Setup routes
+	// Add a simple root route and health check
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"success": true,
+			"message": "PentSecOps API is running",
+		})
+	})
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{"status": "ok"})
+	})
+
+	// Setup routes (your existing API routes)
 	fmt.Printf("=== SETTING UP ROUTES ===\n")
 	llmHandler := handlers.NewLLMHandler()
 	routes.SetupRoutes(app, authHandler, authMiddleware, adminOverviewHandler, usersHandler, projectsHandler, tasksHandler, vulnerabilitiesHandler, domainsHandler, notificationsHandler, auditHandler, adminNotificationsHandler, pentesterOverviewHandler, pentesterProjectsHandler, pentesterTasksHandler, pentesterSubmitReportHandler, pentesterAlertsHandler, stakeholderOverviewHandler, stakeholderVulnerabilitiesHandler, stakeholderReportsHandler, llmHandler)
@@ -222,4 +233,3 @@ func customErrorHandler(c *fiber.Ctx, err error) error {
 			"message": err.Error(),
 		},
 	})
-}
