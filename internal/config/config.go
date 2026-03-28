@@ -30,6 +30,7 @@ type ServerConfig struct {
 
 // DatabaseConfig holds database configuration
 type DatabaseConfig struct {
+	URL             string
 	Host            string
 	Port            string
 	User            string
@@ -91,17 +92,18 @@ func Load() (*Config, error) {
 			Port: getEnv("SERVER_PORT", "8080"),
 			Env:  getEnv("ENV", "development"),
 		},
-		Database: DatabaseConfig{
-			Host:            getEnv("DB_HOST", "localhost"),
-			Port:            getEnv("DB_PORT", "5432"),
-			User:            getEnv("DB_USER", "postgres"),
-			Password:        getEnv("DB_PASSWORD", "postgres"),
-			DBName:          getEnv("DB_NAME", "pentsecops"),
-			SSLMode:         getEnv("DB_SSLMODE", "disable"),
-			MaxOpenConns:    getEnvAsInt("DB_MAX_OPEN_CONNS", 25),
-			MaxIdleConns:    getEnvAsInt("DB_MAX_IDLE_CONNS", 5),
-			ConnMaxLifetime: getEnvAsDuration("DB_CONN_MAX_LIFETIME", 5*time.Minute),
-		},
+		       Database: DatabaseConfig{
+			       URL:             getEnv("DATABASE_URL", ""),
+			       Host:            getEnv("DB_HOST", "localhost"),
+			       Port:            getEnv("DB_PORT", "5432"),
+			       User:            getEnv("DB_USER", "postgres"),
+			       Password:        getEnv("DB_PASSWORD", "postgres"),
+			       DBName:          getEnv("DB_NAME", "pentsecops"),
+			       SSLMode:         getEnv("DB_SSLMODE", "disable"),
+			       MaxOpenConns:    getEnvAsInt("DB_MAX_OPEN_CONNS", 25),
+			       MaxIdleConns:    getEnvAsInt("DB_MAX_IDLE_CONNS", 5),
+			       ConnMaxLifetime: getEnvAsDuration("DB_CONN_MAX_LIFETIME", 5*time.Minute),
+		       },
 		Auth: AuthConfig{
 			PublicKey:            getEnv("PASETO_PUBLIC_KEY", ""),
 			PrivateKey:           getEnv("PASETO_PRIVATE_KEY", ""),
@@ -136,10 +138,13 @@ func Load() (*Config, error) {
 
 // GetDSN returns the database connection string
 func (c *DatabaseConfig) GetDSN() string {
-	return fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		c.Host, c.Port, c.User, c.Password, c.DBName, c.SSLMode,
-	)
+	       if c.URL != "" {
+		       return c.URL
+	       }
+	       return fmt.Sprintf(
+		       "host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		       c.Host, c.Port, c.User, c.Password, c.DBName, c.SSLMode,
+	       )
 }
 
 // Helper functions

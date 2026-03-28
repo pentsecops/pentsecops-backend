@@ -228,9 +228,9 @@ CREATE INDEX idx_reports_created_at ON reports(created_at);
 -- Credentials: admin@test.com/admin123, pentester@test.com/pentester123, stakeholder@test.com/stakeholder123
 INSERT INTO users (id, email, password_hash, full_name, role, is_active, created_at, updated_at)
 VALUES 
-    (gen_random_uuid(), 'admin@test.com', '6e011471524e6706b3b68178cbf4930eb048a46b7491370add2557115f0e4034', 'Test Admin', 'admin', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (gen_random_uuid(), 'pentester@test.com', 'b1894abd4b06d0410903ecec7a2bdbbc611c76ea7becd781aa2aba23fa3fd7e0', 'Test Pentester', 'pentester', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (gen_random_uuid(), 'stakeholder@test.com', '2861c866377e97a32a0507da96838f179e1115cb75f8057ad2a86700fbfa655e', 'Test Stakeholder', 'stakeholder', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    (gen_random_uuid(), 'admin@test.com', '6e011471524e6706b3b68178cbf4930eb048a46b7491370add2557115f0e4034', 'Admin', 'admin', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), 'pentester@test.com', 'b1894abd4b06d0410903ecec7a2bdbbc611c76ea7becd781aa2aba23fa3fd7e0', 'Pentester', 'pentester', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), 'stakeholder@test.com', '2861c866377e97a32a0507da96838f179e1115cb75f8057ad2a86700fbfa655e', 'Stakeholder', 'stakeholder', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (email) DO UPDATE
 SET password_hash = EXCLUDED.password_hash,
     failed_login_attempts = 0,
