@@ -173,7 +173,12 @@ func main() {
 
 	// Start server in a goroutine
 	go func() {
-		addr := fmt.Sprintf("%s:%s", cfg.Server.Host, cfg.Server.Port)
+		// Prefer PORT env var (used by Railway), fallback to cfg.Server.Port
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = cfg.Server.Port
+		}
+		addr := fmt.Sprintf("0.0.0.0:%s", port)
 		logger.Info("Server starting on %s", addr)
 		fmt.Printf("=== SERVER STARTING ON %s ===\n", addr)
 
