@@ -226,10 +226,11 @@ func customErrorHandler(c *fiber.Ctx, err error) error {
 
 	log.Printf("Request error: %v, path: %s, method: %s, status: %d", err, c.Path(), c.Method(), code)
 
-	return c.Status(code).JSON(fiber.Map{
-		"success": false,
-		"error": fiber.Map{
-			"code":    "ERROR",
-			"message": err.Error(),
-		},
-	})
+	   return c.Status(code).JSON(fiber.Map{
+		   "success": false,
+		   "error": fiber.Map{
+			   "code":    "ERROR",
+			   "message": err.Error(),
+		   },
+	   })
+	}
